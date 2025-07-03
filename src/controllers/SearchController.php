@@ -2,15 +2,26 @@
 namespace Src\Controllers;
 
 use Src\Models\ProductModel;
+use Src\Models\CustomerModel;
+use Src\Models\CustomerCartModel;
+use Src\Models\EcomOrderModel;
+use Src\Models\EcomOrderDetailModel;
+use Src\Models\InventoryModel;
+use Src\Models\InventoryHistoryModel;
 use PDO;
 
 class SearchController
 {
     private PDO $pdo;
-    /** Map table names to model classes */
+    
     private array $models = [
-        'Product' => ProductModel::class,
-        // future: 'Customer' => CustomerModel::class, etc.
+        'Product'               => ProductModel::class,
+        'Customer'              => CustomerModel::class,
+        'CustomerCart'          => CustomerCartModel::class,
+        'EcomOrder'             => EcomOrderModel::class,
+        'EcomOrderDetail'       => EcomOrderDetailModel::class,
+        'Inventory'             => InventoryModel::class,
+        'InventoryHistory'      => InventoryHistoryModel::class,
     ];
 
     public function __construct(PDO $pdo)
@@ -18,20 +29,16 @@ class SearchController
         $this->pdo = $pdo;
     }
 
-    /** Show form */
     public function index(): void
     {
-        // Pass available tables and their searchable fields
         $tables = [];
         foreach ($this->models as $name => $class) {
-            /** @var \Src\Models\BaseModel $m */
             $m = new $class($this->pdo);
             $tables[$name] = $m->getSearchable();
         }
         require __DIR__ . '/../views/search_form.php';
     }
 
-    /** Handle search submission */
     public function search(): void
     {
         $table = $_GET['table'] ?? '';
@@ -40,7 +47,6 @@ class SearchController
             die('Unknown table');
         }
         $class = $this->models[$table];
-        /** @var \Src\Models\BaseModel $model */
         $model = new $class($this->pdo);
         $results = $model->search($criteria);
         require __DIR__ . '/../views/search_results.php';

@@ -18,11 +18,13 @@ $pdo = new PDO(
 
 use Src\Controllers\SearchController;
 
-$ctrl = new SearchController($pdo);
+$ctrl   = new SearchController($pdo);
 $action = $_GET['action'] ?? 'index';
 
 if ($action === 'search') {
     $ctrl->search();
+} elseif ($action === 'view') {
+    $ctrl->view();
 } else {
     $ctrl->index();
 }

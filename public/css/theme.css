@@ -52,6 +52,10 @@ body {
   color: #fff;
 }
 
+.table-hover tbody tr:hover > td{
+  background-color: var(--bs-secondary);
+}
+
 .footer {
   font-size: .9rem;
   color: var(--bs-dark);
